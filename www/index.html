@@ -15,27 +15,63 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <span class="navbar-brand">Open House</span>
+                    <div class="navbar-brand">Open House</div>
                 </div>
             </div>
         </nav>
 
         <main class="container">
             <!-- homepage -->
-            <div id="home">
+            <div class="page" id="home" data-title="Open House">
                 <div class="row">
-                    <div class="col-md-12 well">
-                        <h1>Suggestions</h1>
-                        <p>Unsure of what to do, but short of time?</p>
-                        <p>Indicate how long you are staying and we will recommend you events!</p>
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="well text-center">
+                            <h3>Suggestions</h3>
+                            <p>Unsure of what to do, but short of time?</p>
+                            <p>Indicate how long you are staying and we will recommend you events!</p>
+                            <a href="#" class="btn btn-primary">Let's do it!</a>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12 well">
-                        <h1>Redemption Codes</h1>
-                        <p>Go around the school collecting codes to earn points that can be used to redeem free prizes!</p>
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="well text-center">
+                            <h3>Redemption Codes</h3>
+                            <p>Go around the school collecting codes to earn points that can be used to redeem free prizes!</p>
+                            <a href="#redeem" class="btn btn-primary">Got a code?</a>
+                        </div>
                     </div>
                 </div>
+            </div>
+            <!-- redemption code -->
+            <div class="page" id="redeem" data-title="Codes" data-back="home">
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1 text-center">
+                        <div class="input-group">
+                            <input type="text" name="code" class="form-control" placeholder="Enter A Code">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="codeSubmit">Enter</button>
+                            </span>
+                        </div>
+                        <p>Number of codes entered:</p>
+                        <h3 id="codeCount"></h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr><td><strong>Prize List</strong></td></tr>
+                            </thead>
+                            <tbody id="codeTiers">
+                                <tr data-points="3"><td>3 codes - Tier 3</td></tr>
+                                <tr data-points="6"><td>6 codes - Tier 2</td></tr>
+                                <tr data-points="10"><td>10 codes - Tier 1</td></tr>
+                            </tbody>
+                        </table>
+                        <p>Go to our collection booth at the Inner Plaza to collect your free gifts!</p>
+                    </div>
+                </div>
+            </div>
+            <!-- about -->
+            <div class="page" id="info" data-title="About">
+
             </div>
         </main>
 
@@ -48,5 +84,7 @@
         </footer>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/eModal.min.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>
