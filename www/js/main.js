@@ -1,6 +1,6 @@
 $(function() {
     $(window).on("hashchange", function() {
-        render(decodeURI(window.location.hash));
+            render(decodeURI(window.location.hash));
     });
 
     function render(url) {
@@ -10,47 +10,85 @@ $(function() {
         $(".navbar-brand").text($(url).data("title") || "undefined");
     }
 
+    function displayConnectivity() {
+        var $icon = $("#nowifi");
+        if (navigator.onLine) {
+            $icon.hide();
+        } else {
+            $icon.show();
+        }
+    }
+
     /* Code Page */
+    var ADMIN_CODE = "hcadmin";
+    var CLAIM_CODE = "claim";
+
     var CODES = [ /* For testing purposes */
-        {desc: "IRS", code: "420blazeit", message: "What a dank memer!", id: 0}
+        {desc: "IRS", code: "420blazeit", message: "What a dank memer!", id: 0, value: 1}
     ];
 
-    function getEnteredCodes() {
-        var codes = localStorage.getItem("enteredCodes");
-        if (!codes) return [];
+    function initialise(force = false) {
+        console.info("Initialising points system");
+        if (!localStorage.getItem("currentPoints") || force)
+            localStorage.setItem("currentPoints", 0);
+        if (!localStorage.getItem("enteredCodes") || force)
+            localStorage.setItem("enteredCodes", "[]");
+        if (!localStorage.getItem("giftClaimed") || force)
+            localStorage.setItem("giftClaimed", false);
+    }
+
+    function getPoints() {
+        return parseInt(localStorage.getItem("currentPoints"));
+    }
+
+    function getCodes() {
         return JSON.parse(localStorage.getItem("enteredCodes"));
     }
 
-    function checkCode(code) {
+    function processCode(code) {
         // Check if the code exists
         var idx = -1;
         CODES.forEach(function(e, i) {
             if (e.code === code) idx = i;
         });
         if (idx === -1) {
+            console.warn("Invalid code");
             eModal.alert("Invalid Code!", "Error");
             return;
         }
         // Check if it was already entered
-        var codes = getEnteredCodes();
+        var codes = getCodes();
         if (~ codes.indexOf(CODES[idx].id)) {
+            console.warn("Duplicate code");
             eModal.alert("Code was already entered!", "Error");
             return;
         }
         // Valid
         addCode(CODES[idx].id);
+        changePoints(CODES[idx].value);
         eModal.alert(CODES[idx].message, CODES[idx].desc);
     }
 
+    function changePoints(amt) {
+        var points = getPoints();
+        points += amt;
+        localStorage.setItem("currentPoints", points);
+    }
+
     function addCode(id) {
-        var codes = getEnteredCodes();
+        var codes = getCodes();
         codes.push(id);
         localStorage.setItem("enteredCodes", JSON.stringify(codes));
     }
 
-    function updatePoints() {
-        var codes = getEnteredCodes();
-        var points = codes.length;
+    function displayPoints() {
+        console.info("Displaying points");
+        var giftClaimed = JSON.parse(localStorage.getItem("giftClaimed"));
+        if (giftClaimed) {
+             $("#codeCount").text("-- Gift Claimed --");
+             return;
+        }
+        var points = getPoints();
         $("#codeCount").text(points);
         $("#codeTiers tr").each(function(i, e) {
             var $e = $(e);
@@ -62,15 +100,48 @@ $(function() {
         })
     }
 
+    function executeAdminCommand(cmd) {
+        var [instruction, value] = cmd.split(" ");
+        console.log("Admin Command:", instruction, value);
+        if (instruction === "add") {
+            console.log("Adding", value, "points");
+            changePoints(parseInt(value));
+        } else if (instruction === "deduct") {
+            console.log("Deducting", value, "points");
+            changePoints(-parseInt(value));
+        } else if (instruction === "set") {
+            console.log("Setting to", value, "points");
+            changePoints(parseInt(value) - getPoints());
+        } else if (instruction === "unclaim") {
+            console.log("Unclaiming gift");
+            localStorage.setItem("giftClaimed", false);
+        } else if (instruction === "reset") {
+            console.info("Clearing points system");
+            initialise(true);
+        }
+        displayPoints(); // Need to display since it is async
+    }
+
     $("#codeSubmit").click(function(e) {
-        var $code = $("[name='code']");
-        var code = $code.val();
+        var code = $("[name='code']").val();
         console.log("Entered code:", code);
-        checkCode(code);
-        updatePoints();
+        if (code === ADMIN_CODE) {
+            console.info("Displayed admin panel");
+            eModal.prompt("Enter command", "Admin Panel")
+            .then((cmd) => executeAdminCommand(cmd));
+        } else if (code === CLAIM_CODE) {
+            console.info("Claiming gift");
+            localStorage.setItem("giftClaimed", true);
+        } else {
+            processCode(code);
+        }
+        displayPoints();
     });
 
     // Render
+    initialise();
     render(decodeURI(window.location.hash) || "#home");
-    updatePoints();
+    displayPoints();
+    displayConnectivity();
+    $(window).on("online offline", displayConnectivity);
 });

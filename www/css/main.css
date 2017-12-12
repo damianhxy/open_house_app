@@ -144,3 +144,9 @@ body {
     display: flex;
     justify-content: space-between;
 }
+
+.nav-btn {
+    height: 100%;
+    width: 100%;
+    white-space: normal;
+}
