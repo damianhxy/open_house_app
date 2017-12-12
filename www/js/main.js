@@ -45,6 +45,10 @@ $(function() {
         return JSON.parse(localStorage.getItem("enteredCodes"));
     }
 
+    function getGiftClaimed() {
+        return JSON.parse(localStorage.getItem("giftClaimed"));
+    }
+
     function processCode(code) {
         // Check if the code exists
         var idx = -1;
@@ -83,21 +87,20 @@ $(function() {
 
     function displayPoints() {
         console.info("Displaying points");
-        var giftClaimed = JSON.parse(localStorage.getItem("giftClaimed"));
-        if (giftClaimed) {
-             $("#codeCount").text("-- Gift Claimed --");
+        if (getGiftClaimed()) {
+             $("#pointTotal").text("-- Gift Claimed --");
              return;
         }
         var points = getPoints();
-        $("#codeCount").text(points);
-        $("#codeTiers tr").each(function(i, e) {
+        $("#pointTotal").text(points);
+        $("#pointTiers tr").each(function(i, e) {
             var $e = $(e);
             if (parseInt($e.data("points")) <= points) {
                 $e.attr("class", "success");
             } else {
                 $e.attr("class", "danger");
             }
-        })
+        });
     }
 
     function executeAdminCommand(cmd) {
@@ -131,7 +134,26 @@ $(function() {
             .then((cmd) => executeAdminCommand(cmd));
         } else if (code === CLAIM_CODE) {
             console.info("Claiming gift");
-            localStorage.setItem("giftClaimed", true);
+            if (getGiftClaimed()) {
+                eModal.alert("Gift already claimed.", "Error!");
+                return;
+            }
+            var maxIdx = -1;
+            var points = getPoints();
+            var $pointTiers = $("#pointTiers tr");
+            $pointTiers.each(function(i, e) {
+                var $e = $(e);
+                if (parseInt($e.data("points")) <= points) maxIdx = i;
+            });
+            if (~ maxIdx) {
+                var $item = $($pointTiers[maxIdx]);
+                $pointTiers.attr("class", "warning");
+                $item.attr("class", "success");
+                localStorage.setItem("giftClaimed", true);
+                eModal.alert($item.text(), "Gift Claimed");
+            } else {
+                eModal.alert("Insufficient points to claim anything", "Error!");
+            }
         } else {
             processCode(code);
         }

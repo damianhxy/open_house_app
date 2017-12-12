@@ -61,13 +61,13 @@
                                 <button class="btn btn-default" type="submit" id="codeSubmit">Enter</button>
                             </span>
                         </div>
-                        <p>Number of codes entered:</p>
-                        <h3 id="codeCount"></h3>
+                        <p>Total points:</p>
+                        <h3 id="pointTotal"></h3>
                         <table class="table table-bordered">
                             <thead>
                                 <tr><td><strong>Prize List</strong></td></tr>
                             </thead>
-                            <tbody id="codeTiers">
+                            <tbody id="pointTiers">
                                 <tr data-points="3"><td>3 points - Tier 3</td></tr>
                                 <tr data-points="6"><td>6 points - Tier 2</td></tr>
                                 <tr data-points="10"><td>10 points - Tier 1</td></tr>
@@ -152,6 +152,14 @@
             messagingSenderId: "935185990875"
           };
           firebase.initializeApp(config);
+          var database = firebase.database();
+          if (!localStorage.getItem("data")) {
+              console.info("Reading firebase");
+              firebase.database().ref("/").once("value").then(function(val) {
+                 console.log(val);
+                 localStorage.setItem("data", JSON.stringify(val));
+              });
+          }
         </script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
