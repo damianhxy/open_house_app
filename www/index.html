@@ -141,26 +141,6 @@
             <a href="#info"><i class="fa fa-2x fa-inverse fa-info-circle"></i></a>
         </footer>
         <script src="https://www.gstatic.com/firebasejs/4.8.0/firebase.js"></script>
-        <script>
-          // Initialize Firebase
-          var config = {
-            apiKey: "AIzaSyBF3kHt1uyz4_FYcd04uEPk_hoHFKHPCug",
-            authDomain: "open-house-app.firebaseapp.com",
-            databaseURL: "https://open-house-app.firebaseio.com",
-            projectId: "open-house-app",
-            storageBucket: "open-house-app.appspot.com",
-            messagingSenderId: "935185990875"
-          };
-          firebase.initializeApp(config);
-          var database = firebase.database();
-          if (!localStorage.getItem("data")) {
-              console.info("Reading firebase");
-              firebase.database().ref("/").once("value").then(function(val) {
-                 console.log(val);
-                 localStorage.setItem("data", JSON.stringify(val));
-              });
-          }
-        </script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/eModal.min.js"></script>

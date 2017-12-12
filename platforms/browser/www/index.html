@@ -9,38 +9,141 @@
         <title>HC Open House 2018</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
-        <link href="css/fontawesome-all.min.css" rel="stylesheet">
+        <link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     </head>
     <body>
         <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
+            <div class="container">
                 <div class="navbar-header">
-                    <span class="navbar-brand">Open House</span>
+                    <div class="navbar-brand">Open House</div>
+                    <span class="fa-stack">
+                        <i class="fa fa-wifi fa-inverse fa-stack-1x"></i>
+                        <i id="nowifi" class="fa fa-times fa-stack-1x"></i>
+                    </span>
                 </div>
             </div>
         </nav>
 
         <main class="container">
-            <!-- homepage -->
-            <div class="col-md-12" id="home">
-                <a class="btn btn-default">
-                    <h1>Suggestions</h1>
-                    <p>Unsure of what to do, but short of time?</p>
-                    <p>Indicate how long you are staying and we will recommend you events!</p>
-                </a>
+            <!-- Map -->
+            <div class="page" id="schedule" data-title="Schedule">
             </div>
-
+            <!-- Schedule -->
+            <div class="page" id="map" data-title="Map">
+            </div>
+            <!-- Home Page -->
+            <div class="page" id="home" data-title="Open House">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>Suggestions</h3>
+                            <p>Unsure of what to do, but short of time?</p>
+                            <p>Indicate how long you are staying and we will recommend you events!</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a href="#redeem" class="btn btn-default nav-btn">
+                            <h3>Redemption Codes</h3>
+                            <p>Go around the school collecting codes to earn points that can be used to redeem free prizes!</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Code Redemption -->
+            <div class="page" id="redeem" data-title="Codes" data-back="home">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <div class="input-group">
+                            <input type="text" name="code" class="form-control" placeholder="Enter A Code">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit" id="codeSubmit">Enter</button>
+                            </span>
+                        </div>
+                        <p>Total points:</p>
+                        <h3 id="pointTotal"></h3>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr><td><strong>Prize List</strong></td></tr>
+                            </thead>
+                            <tbody id="pointTiers">
+                                <tr data-points="3"><td>3 points - Tier 3</td></tr>
+                                <tr data-points="6"><td>6 points - Tier 2</td></tr>
+                                <tr data-points="10"><td>10 points - Tier 1</td></tr>
+                            </tbody>
+                        </table>
+                        <p>Go to our collection booth at the Inner Plaza to collect your free gifts!</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Curriculum -->
+            <div class="page" id="curriculum" data-title="Curriculum">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>Academic Programmes</h3>
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>CCAs</h3>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>Talent Programmes</h3>
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>H3 Programmes</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- About -->
+            <div class="page" id="info" data-title="About">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>Why Hwa Chong?</h3>
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>Getting to Hwa Chong</h3>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>FAQs</h3>
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="#" class="btn btn-default nav-btn">
+                            <h3>About the App</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </main>
 
         <footer class="footer">
-            test
-            <i class="fas fa-clock-o"></i>
-            <i class="fas fa-map"></i>
-            <i class="fas fa-home"></i>
-            <i class="fas fa-book"></i>
-            <i class="fas fa-info-circle"></i>
+            <a href="#schedule"><i class="fa fa-2x fa-inverse fa-clock-o"></i></a>
+            <a href="#map"><i class="fa fa-2x fa-inverse fa-map"></i></a>
+            <a href="#home"><i class="fa fa-2x fa-inverse fa-home"></i></a>
+            <a href="#curriculum"><i class="fa fa-2x fa-inverse fa-book"></i></a>
+            <a href="#info"><i class="fa fa-2x fa-inverse fa-info-circle"></i></a>
         </footer>
+        <script src="https://www.gstatic.com/firebasejs/4.8.0/firebase.js"></script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
+        <script src="js/eModal.min.js"></script>
+        <script src="js/main.js"></script>
     </body>
 </html>

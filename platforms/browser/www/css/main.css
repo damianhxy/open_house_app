@@ -129,7 +129,8 @@ html {
 }
 
 body {
-    margin-top: 50px; /* Navbar */
+    margin-top: 70px; /* Navbar */
+    margin-bottom: 70px;
 }
 
 .footer {
@@ -137,8 +138,15 @@ body {
     bottom: 0;
     left: 0;
     right: 0;
-    padding-bottom: 14px;
-    padding-top: 14px;
+    padding: 20px;
     position: fixed;
     text-align: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nav-btn {
+    height: 100%;
+    width: 100%;
+    white-space: normal;
 }
