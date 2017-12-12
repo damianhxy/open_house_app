@@ -1,4 +1,4 @@
-# A Blank PhoneGap App
+# Hwa Chong Open House App 2018
 
 ## Usage
 
