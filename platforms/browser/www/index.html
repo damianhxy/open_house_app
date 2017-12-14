@@ -15,20 +15,54 @@
         <nav class="navbar navbar-default navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
+                    <a id="backBtn" class="btn btn-default navbar-btn pull-left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
                     <div class="navbar-brand">Open House</div>
-                    <span class="fa-stack">
-                        <i class="fa fa-wifi fa-inverse fa-stack-1x"></i>
-                        <i id="nowifi" class="fa fa-times fa-stack-1x"></i>
-                    </span>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a>
+                            <span class="fa-stack">
+                                <i class="fa fa-wifi fa-inverse fa-stack-1x"></i>
+                                <i id="nowifi" class="fa fa-times fa-stack-1x"></i>
+                            </span>
+                        </a></li>
+                    </ul>
                 </div>
             </div>
         </nav>
 
         <main class="container">
-            <!-- Map -->
-            <div class="page" id="schedule" data-title="Schedule">
-            </div>
             <!-- Schedule -->
+            <script id="schedule-list" type="x-handlebars-template">
+            <div class="page" id="schedule" data-title="Schedule">
+            {{#if this.schedule}}
+                {{#each this.schedule}}
+                <a href="#{{@key}}" class="btn btn-default nav-btn">
+                    <strong>{{this.name}}</strong>
+                    <p>{{this.time.start}} - {{this.time.end}} / {{this.loc}}</p>
+                </a>
+                {{/each}}
+                </tbody>
+            </table>
+            {{else}}
+                <div class="alert alert-danger" role="alert">Nothing to see here</div>
+            {{/if}}
+            </div>
+            </script>
+            <!-- Generated Schedule Pages -->
+            <script id="schedule-divs" type="x-handlebars-template">
+            {{#each this.schedule}}
+            <div class="page" id="{{@key}}" data-title="Event Details" data-back="#schedule">
+                <h3>{{this.name}}</h3>
+                <p>{{this.time.start}} - {{this.time.end}}</p>
+                <p>{{this.loc}}</p>
+                <div class="well">{{this.details}}</div>
+            </div>
+            {{/each}}
+            </script>
+            <!-- Map -->
             <div class="page" id="map" data-title="Map">
             </div>
             <!-- Home Page -->
@@ -50,9 +84,22 @@
                         </a>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <h3>Something not working?</h3>
+                        <div class="btn-group" role="group">
+                            <button id="updateData" class="btn btn-success">
+                                <i class="fa fa-download"></i> Update Data
+                            </button>
+                            <button class="btn btn-primary" onclick="location.reload();">
+                                <i class="fa fa-refresh"></i> Refresh Display
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- Code Redemption -->
-            <div class="page" id="redeem" data-title="Codes" data-back="home">
+            <div class="page" id="redeem" data-title="Codes" data-back="#home">
                 <div class="row">
                     <div class="col-xs-12 text-center">
                         <div class="input-group">
@@ -65,7 +112,7 @@
                         <h3 id="pointTotal"></h3>
                         <table class="table table-bordered">
                             <thead>
-                                <tr><td><strong>Prize List</strong></td></tr>
+                                <tr><th><strong>Prize List</strong></th></tr>
                             </thead>
                             <tbody id="pointTiers">
                                 <tr data-points="3"><td>3 points - Tier 3</td></tr>
@@ -81,28 +128,50 @@
             <div class="page" id="curriculum" data-title="Curriculum">
                 <div class="row">
                     <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                        <a href="#academic" class="btn btn-default nav-btn">
                             <h3>Academic Programmes</h3>
                         </a>
                     </div>
                     <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                        <a href="#cca" class="btn btn-default nav-btn">
                             <h3>CCAs</h3>
                         </a>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                        <a href="#talent" class="btn btn-default nav-btn">
                             <h3>Talent Programmes</h3>
                         </a>
                     </div>
                     <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                        <a href="#H3" class="btn btn-default nav-btn">
                             <h3>H3 Programmes</h3>
                         </a>
                     </div>
                 </div>
+            </div>
+            <!-- Academic Programmes -->
+            <div class="page" id="academic" data-title="Academic Programmes">
+
+            </div>
+            <!-- CCAs -->
+            <div class="page" id="cca" data-title="CCAs">
+
+            </div>
+            <!-- Talent Programmes -->
+            <div class="page" id="talent" data-title="Talent Programmes">
+
+            </div>
+            <!-- H3 -->
+            <div class="page" id="H3" data-title="H3">
+                <script id="h3-list" type="x-handlebars-template">
+                    {{#each this.H3}}
+                        <div class="well">
+                            {{@key}}
+                        </div>
+                    {{/each}}
+                </script>
             </div>
             <!-- About -->
             <div class="page" id="info" data-title="About">
@@ -131,16 +200,24 @@
                     </div>
                 </div>
             </div>
+            <!-- Error Page -->
+            <div class="page" id="error" data-title="Error" data-back="#home">
+                <div class="alert alert-danger" role="alert">
+                    <p>Not sure how you did it, but you broke the app.</p>
+                    <p>Error 404 - Page not found.</p>
+                </div>
+            </div>
         </main>
 
         <footer class="footer">
-            <a href="#schedule"><i class="fa fa-2x fa-inverse fa-clock-o"></i></a>
-            <a href="#map"><i class="fa fa-2x fa-inverse fa-map"></i></a>
-            <a href="#home"><i class="fa fa-2x fa-inverse fa-home"></i></a>
-            <a href="#curriculum"><i class="fa fa-2x fa-inverse fa-book"></i></a>
-            <a href="#info"><i class="fa fa-2x fa-inverse fa-info-circle"></i></a>
+            <a href="#schedule"><i class="fa fa-inverse fa-clock-o"></i></a>
+            <a href="#map"><i class="fa fa-inverse fa-map"></i></a>
+            <a href="#home"><i class="fa fa-inverse fa-home"></i></a>
+            <a href="#curriculum"><i class="fa fa-inverse fa-book"></i></a>
+            <a href="#info"><i class="fa fa-inverse fa-info-circle"></i></a>
         </footer>
-        <script src="https://www.gstatic.com/firebasejs/4.8.0/firebase.js"></script>
+        <script src="js/firebase.js"></script>
+        <script src="js/handlebars-v4.0.11.js"></script>
         <script src="js/jquery-3.2.1.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/eModal.min.js"></script>

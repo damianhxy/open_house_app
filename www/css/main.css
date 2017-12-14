@@ -133,6 +133,16 @@ body {
     margin-bottom: 70px;
 }
 
+#backBtn {
+    position: relative;
+    z-index: 1;
+}
+
+.navbar-brand-shifted {
+    position: relative;
+    padding-left: 20px;
+}
+
 .footer {
     background-color: #fb0000;
     bottom: 0;
