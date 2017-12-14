@@ -1,6 +1,5 @@
 $(function() {
     var CONSTANTS = null;
-
     var $current_page = null;
 
     $(window).on("hashchange", function() {
@@ -95,6 +94,7 @@ $(function() {
         updateConstants();
         compilePages();
         displayPoints();
+        console.timeEnd("init");
     }
 
     $("#updateData").click(function() {
@@ -244,6 +244,24 @@ $(function() {
         displayPoints();
     });
 
+    /* CCA Page */
+    $(".btn-cca").click(function(e) {
+        var $target = $(e.target)
+        var tag = $target.text().trim();
+        console.log("Toggling tag", tag);
+        var state = !$target.data("active");
+        $target.data("active", state);
+        $target.toggleClass("btn-success", state);
+        $target.toggleClass("btn-danger", !state);
+        $target.children().first().toggleClass("fa-toggle-on", state);
+        $target.children().first().toggleClass("fa-toggle-off", !state);
+        if (state) {
+            $("[data-cca='" + tag + "']").show();
+        } else {
+            $("[data-cca='" + tag + "']").hide();
+        }
+    });
+
     $(window).on("online offline", displayConnectivity);
     // TODO: Eventually, hardcode some data and pull at intervals
     // TODO: Add loading spinner
@@ -251,5 +269,4 @@ $(function() {
     console.time("init");
     if (!localStorage.getItem("data")) pullFirebaseData();
     else init();
-    console.timeEnd("init");
 });
