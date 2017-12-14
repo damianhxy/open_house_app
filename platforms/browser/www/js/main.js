@@ -1,20 +1,20 @@
 $(function() {
-    var CONSTANTS = {
-        ADMIN_CODE: "KtDybrptUsdt3fzJmDhMKRfd",
-        CLAIM_CODE: "claim"
-    };
+    var CONSTANTS = null;
+
+    var $current_page = null;
 
     $(window).on("hashchange", function() {
         render(decodeURI(window.location.hash));
     });
 
     function render(url) {
-        console.log("Rendering:", url);
-        $(".page").hide();
+        $current_page.hide();
         if (!$(url).length) url = "#error";
+        console.log("Rendering:", url);
         var $url = $(url);
         var $back = $("#backBtn");
         $url.show();
+        $current_page = $url;
         $(".navbar-brand").text($url.data("title"));
         if ($url.data("back")) {
             $back.attr("href", $url.data("back"));
@@ -41,7 +41,6 @@ $(function() {
 
     function compilePages() {
         var firebaseData = getFirebaseData();
-        console.log(firebaseData);
         var templates = $("[type='x-handlebars-template']");
         templates.each(function(i, e) {
             var $e = $(e);
@@ -50,6 +49,7 @@ $(function() {
             console.log("Compiled template:", e.id);
             $e.closest("script").get(0).outerHTML = compiledTemplate(firebaseData);
         });
+        $current_page = $(".page"); // Hide all the pages
         render(decodeURI(window.location.hash) || "#home");
     }
 
@@ -58,6 +58,7 @@ $(function() {
     }
 
     function pullFirebaseData() {
+        console.info("Executing pullFirebaseData()");
         var config = {
           apiKey: "AIzaSyBF3kHt1uyz4_FYcd04uEPk_hoHFKHPCug",
           authDomain: "open-house-app.firebaseapp.com",
@@ -67,13 +68,33 @@ $(function() {
           messagingSenderId: "935185990875"
         };
         firebase.initializeApp(config);
-        var database = firebase.database();
-        console.info("Reading firebase");
-        firebase.database().ref("/").once("value").then(function(val) {
+        firebase.database().ref("/").once("value")
+        .then(function(val) {
            localStorage.setItem("data", JSON.stringify(val));
-           compilePages();
-           updateConstants();
+           postPullHook();
+           init();
         });
+    }
+
+    function postPullHook() {
+        console.info("Executing postPullHook()");
+        var firebaseData = getFirebaseData();
+        // Convert point tiers into array and sort
+        var arr = Object.values(firebaseData.Constants.PRIZE_LIST);
+        arr.sort(function(a, b) {
+            return a.points < b.points ? -1 : 1;
+        });
+        firebaseData.Constants.PRIZE_LIST = arr;
+        localStorage.setItem("data", JSON.stringify(firebaseData));
+    }
+
+    function init() {
+        console.info("Executing init()");
+        initialisePoints();
+        displayConnectivity();
+        updateConstants();
+        compilePages();
+        displayPoints();
     }
 
     $("#updateData").click(function() {
@@ -83,7 +104,7 @@ $(function() {
 
     /* Code Page */
 
-    function initialise(force = false) {
+    function initialisePoints(force = false) {
         console.info("Initialising points system");
         if (!localStorage.getItem("currentPoints") || force)
             localStorage.setItem("currentPoints", 0);
@@ -162,7 +183,8 @@ $(function() {
     }
 
     function executeAdminCommand(cmd) {
-        var [instruction, value] = cmd.split(" ");
+        var instruction = cmd.substr(0, cmd.indexOf(' '));
+        var value = cmd.substr(cmd.indexOf(' ') + 1);
         console.log("Admin Command:", instruction, value);
         if (instruction === "add") {
             console.log("Adding", value, "points");
@@ -178,7 +200,7 @@ $(function() {
             localStorage.setItem("giftClaimed", false);
         } else if (instruction === "reset") {
             console.info("Clearing points system");
-            initialise(true);
+            initialisePoints(true);
         } else if (instruction === "code") {
             console.info("Executing arbitrary code");
             eval(value);
@@ -186,7 +208,8 @@ $(function() {
         displayPoints(); // Need to display since it is async
     }
 
-    $("#codeSubmit").click(function(e) {
+    $("#codeSubmit").on("submit", function(e) {
+        e.preventDefault();
         var code = $("[name='code']").val();
         console.log("Entered code:", code);
         if (code === CONSTANTS.ADMIN_CODE) {
@@ -221,14 +244,12 @@ $(function() {
         displayPoints();
     });
 
-    // Init
-    initialise();
-    displayPoints();
-    displayConnectivity();
     $(window).on("online offline", displayConnectivity);
+    // TODO: Eventually, hardcode some data and pull at intervals
+    // TODO: Add loading spinner
+    // TODO: Don't try to pull if user is offline
+    console.time("init");
     if (!localStorage.getItem("data")) pullFirebaseData();
-    else {
-        compilePages(); 
-        updateConstants();
-    }
+    else init();
+    console.timeEnd("init");
 });

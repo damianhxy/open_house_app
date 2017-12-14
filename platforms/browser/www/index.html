@@ -25,7 +25,7 @@
                         <li><a>
                             <span class="fa-stack">
                                 <i class="fa fa-wifi fa-inverse fa-stack-1x"></i>
-                                <i id="nowifi" class="fa fa-times fa-stack-1x"></i>
+                                <i id="nowifi" class="fa fa-times fa-inverse fa-stack-1x"></i>
                             </span>
                         </a></li>
                     </ul>
@@ -37,23 +37,21 @@
             <!-- Schedule -->
             <script id="schedule-list" type="x-handlebars-template">
             <div class="page" id="schedule" data-title="Schedule">
-            {{#if this.schedule}}
-                {{#each this.schedule}}
-                <a href="#{{@key}}" class="btn btn-default nav-btn">
+            {{#if this.Schedule}}
+                {{#each this.Schedule}}
+                <a href="#{{@key}}" class="btn btn-default btn-block">
                     <strong>{{this.name}}</strong>
                     <p>{{this.time.start}} - {{this.time.end}} / {{this.loc}}</p>
                 </a>
                 {{/each}}
                 </tbody>
             </table>
-            {{else}}
-                <div class="alert alert-danger" role="alert">Nothing to see here</div>
             {{/if}}
             </div>
             </script>
             <!-- Generated Schedule Pages -->
             <script id="schedule-divs" type="x-handlebars-template">
-            {{#each this.schedule}}
+            {{#each this.Schedule}}
             <div class="page" id="{{@key}}" data-title="Event Details" data-back="#schedule">
                 <h3>{{this.name}}</h3>
                 <p>{{this.time.start}} - {{this.time.end}}</p>
@@ -64,12 +62,17 @@
             </script>
             <!-- Map -->
             <div class="page" id="map" data-title="Map">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Map goes here
+                    </div>
+                </div>
             </div>
             <!-- Home Page -->
             <div class="page" id="home" data-title="Open House">
                 <div class="row">
                     <div class="col-xs-12">
-                        <a href="#" class="btn btn-default nav-btn">
+                        <a href="#suggest" class="btn btn-default wrap">
                             <h3>Suggestions</h3>
                             <p>Unsure of what to do, but short of time?</p>
                             <p>Indicate how long you are staying and we will recommend you events!</p>
@@ -78,7 +81,7 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <a href="#redeem" class="btn btn-default nav-btn">
+                        <a href="#redeem" class="btn btn-default wrap">
                             <h3>Redemption Codes</h3>
                             <p>Go around the school collecting codes to earn points that can be used to redeem free prizes!</p>
                         </a>
@@ -98,16 +101,27 @@
                     </div>
                 </div>
             </div>
+            <!-- Suggestions -->
+            <div class="page" id="suggest" data-title="Suggested Events" data-back="#home">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Suggestions go here
+                    </div>
+                </div>
+            </div>
             <!-- Code Redemption -->
             <div class="page" id="redeem" data-title="Codes" data-back="#home">
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <div class="input-group">
-                            <input type="text" name="code" class="form-control" placeholder="Enter A Code">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit" id="codeSubmit">Enter</button>
-                            </span>
-                        </div>
+                        <form id="codeSubmit">
+                            <div class="input-group">
+                                <input type="text" name="code" class="form-control" placeholder="Enter a code">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-success" type="submit">Enter</button>
+                                    <button class="btn btn-danger" type="reset">Clear</button>
+                                </span>
+                            </div>
+                        </form>
                         <p>Total points:</p>
                         <h3 id="pointTotal"></h3>
                         <table class="table table-bordered">
@@ -115,9 +129,11 @@
                                 <tr><th><strong>Prize List</strong></th></tr>
                             </thead>
                             <tbody id="pointTiers">
-                                <tr data-points="3"><td>3 points - Tier 3</td></tr>
-                                <tr data-points="6"><td>6 points - Tier 2</td></tr>
-                                <tr data-points="10"><td>10 points - Tier 1</td></tr>
+                                <script id="point-tiers" type="x-handlebars-template">
+                                {{#each this.Constants.PRIZE_LIST}}
+                                <tr data-points="{{this.points}}"><td>{{this.desc}}</td></tr>
+                                {{/each}}
+                                </script>
                             </tbody>
                         </table>
                         <p>Go to our collection booth at the Inner Plaza to collect your free gifts!</p>
@@ -127,84 +143,221 @@
             <!-- Curriculum -->
             <div class="page" id="curriculum" data-title="Curriculum">
                 <div class="row">
-                    <div class="col-xs-6">
-                        <a href="#academic" class="btn btn-default nav-btn">
+                    <div class="btn-group">
+                        <a href="#academic" class="btn btn-default btn-square wrap">
                             <h3>Academic Programmes</h3>
                         </a>
-                    </div>
-                    <div class="col-xs-6">
-                        <a href="#cca" class="btn btn-default nav-btn">
+                        <a href="#cca" class="btn btn-default btn-square wrap">
                             <h3>CCAs</h3>
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-6">
-                        <a href="#talent" class="btn btn-default nav-btn">
+                    <div class="btn-group">
+                        <a href="#talent" class="btn btn-default btn-square wrap">
                             <h3>Talent Programmes</h3>
                         </a>
-                    </div>
-                    <div class="col-xs-6">
-                        <a href="#H3" class="btn btn-default nav-btn">
+                        <a href="#h3" class="btn btn-default btn-square wrap">
                             <h3>H3 Programmes</h3>
                         </a>
                     </div>
                 </div>
             </div>
             <!-- Academic Programmes -->
-            <div class="page" id="academic" data-title="Academic Programmes">
-
-            </div>
-            <!-- CCAs -->
-            <div class="page" id="cca" data-title="CCAs">
-
-            </div>
-            <!-- Talent Programmes -->
-            <div class="page" id="talent" data-title="Talent Programmes">
-
-            </div>
-            <!-- H3 -->
-            <div class="page" id="H3" data-title="H3">
-                <script id="h3-list" type="x-handlebars-template">
-                    {{#each this.H3}}
-                        <div class="well">
-                            {{@key}}
-                        </div>
-                    {{/each}}
-                </script>
-            </div>
-            <!-- About -->
-            <div class="page" id="info" data-title="About">
+            <div class="page" id="academic" data-title="Academic Programmes" data-back="#curriculum">
                 <div class="row">
-                    <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
-                            <h3>Why Hwa Chong?</h3>
+                    <div class="col-xs-12">
+                        <a href="#subjects" class="btn btn-default btn-row wrap">
+                            <h3>Subjects Offered</h3>
                         </a>
                     </div>
-                    <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <a href="#research" class="btn btn-default btn-row wrap">
+                            <h3>Research Programmes</h3>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Subjects -->
+            <div class="page" id="subjects" data-title="Subjects Offered" data-back="#academic">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <input type="text" name="subject" class="form-control" placeholder="Search for a subject">
+                        <script id="subject-list" type="x-handlebars-template">
+                        {{#each this.Subjects}}
+                        <button class="btn btn-default btn-block" type="button" data-toggle="collapse" data-target="#{{@key}}" aria-expanded="false">
+                            {{this.name}}
+                        </button>
+                        <div class="collapse" id={{@key}}>
+                            <div class="well">
+                            {{this.desc}}
+                            </div>
+                        </div>
+                        {{/each}}
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!-- Research Programmes -->
+            <div class="page" id="research" data-title="Research Programmes" data-back="#academic">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <script id="research-list" type="x-handlebars-template">
+                        {{#each this.[Research Programmes]}}
+                            <button class="btn btn-default btn-block" type="button" data-toggle="collapse" data-target="#{{@key}}" aria-expanded="false">
+                                {{this.name}}
+                            </button>
+                            <div class="collapse" id={{@key}}>
+                                <div class="well">
+                                {{this.desc}}
+                                </div>
+                            </div>
+                        {{/each}}
+                        <a href="https://ssrc.infocommsociety.com/wp-content/uploads/2016/02/Comparison-Research-Programme.pdf" class="btn btn-default btn-block">
+                            Comparison Chart <i class="fa fa-external-link"></i>
+                        </a>
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!-- CCAs -->
+            <div class="page" id="cca" data-title="CCAs" data-back="#curriculum">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <p>Selection goes here</p>
+                        <script id="cca-list" type="x-handlebars-template">
+                        {{#each this.CCA}}
+                            <div class="well">
+                                {{this.name}}
+                            </div>
+                        {{/each}}
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!-- Talent Programmes -->
+            <div class="page" id="talent" data-title="Talent Programmes" data-back="#curriculum">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <script id="talent-list" type="x-handlebars-template">
+                        {{#each this.[Talent Programmes]}}
+                            <button class="btn btn-default btn-block" type="button" data-toggle="collapse" data-target="#{{@key}}" aria-expanded="false">
+                                {{this.name}}
+                            </button>
+                            <div class="collapse" id={{@key}}>
+                                <div class="well">
+                                {{this.desc}}
+                                </div>
+                            </div>
+                        {{/each}}
+                        </div>
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!-- H3 -->
+            <div class="page" id="h3" data-title="H3 Programmes" data-back="#curriculum">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <script id="h3-list" type="x-handlebars-template">
+                            {{#each this.H3}}
+                                <div class="well">
+                                    {{@key}}
+                                </div>
+                            {{/each}}
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <!-- About -->
+            <div class="page" id="about" data-title="About">
+                <div class="row">
+                    <div class="btn-group">
+                        <a href="#why" class="btn btn-default btn-square wrap">
+                            <h3>Why Hwa Chong?</h3>
+                        </a>
+                        <a href="#directions" class="btn btn-default btn-square wrap">
                             <h3>Getting to Hwa Chong</h3>
                         </a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                    <div class="btn-group">
+                        <a href="#faq" class="btn btn-default btn-square wrap">
                             <h3>FAQs</h3>
                         </a>
-                    </div>
-                    <div class="col-xs-6">
-                        <a href="#" class="btn btn-default nav-btn">
+                        <a href="#appinfo" class="btn btn-default btn-square wrap">
                             <h3>About the App</h3>
                         </a>
                     </div>
                 </div>
             </div>
+            <!-- Why -->
+            <div class="page" id="why" data-title="Why Hwa Chong" data-back="#about">
+                <div class="row">
+                    <div class="col-xs-12">
+                        I wonder why too
+                    </div>
+                </div>
+            </div>
+            <!-- Directions -->
+            <div class="page" id="directions" data-title="Getting there" data-back="#about">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Good question
+                    </div>
+                </div>
+            </div>
+            <!-- FAQs -->
+            <div class="page" id="faq" data-title="FAQs" data-back="#about">
+                <div class="row">
+                    <div class="col-xs-12">
+                        There is no such thing as a stupid question
+                    </div>
+                </div>
+            </div>
+            <!-- App Info -->
+            <div class="page" id="appinfo" data-title="About this App" data-back="#about">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="well">
+                            <p>This application is proudly brought to you by:</p>
+                            <img src="img/IRS.png" class="w-100">
+                            <p>With the team comprising
+                                <ul>
+                                    <li>Ho Xu Yang, Damian</li>
+                                    <li>Teoh Xu En</li>
+                                    <li>Tan Wei Seng</li>
+                                    <li>Zhang Chenxin</li>
+                                </ul>
+                            </p>
+                            <p>Built with
+                                <ul>
+                                    <li>Phonegap</li>
+                                    <li>Jquery</li>
+                                    <li>Firebase</li>
+                                    <li>Bootstrap</li>
+                                    <li>Handlebars</li>
+                                    <li>and <i class="fa fa-heart"></i></li>
+                                </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Error Page -->
-            <div class="page" id="error" data-title="Error" data-back="#home">
-                <div class="alert alert-danger" role="alert">
-                    <p>Not sure how you did it, but you broke the app.</p>
-                    <p>Error 404 - Page not found.</p>
+            <div class="page" id="error" data-title="Error 404" data-back="#home">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="alert alert-danger" role="alert">
+                            <p>Error 404: Page not found.</p>
+                            <p>Not sure how you did it, but you broke the app.</p>
+                            <p>Here's our logo instead.</p>
+                        </div>
+                        <img src="img/IRS.png" class="w-100">
+                    </div>
                 </div>
             </div>
         </main>
@@ -214,7 +367,7 @@
             <a href="#map"><i class="fa fa-inverse fa-map"></i></a>
             <a href="#home"><i class="fa fa-inverse fa-home"></i></a>
             <a href="#curriculum"><i class="fa fa-inverse fa-book"></i></a>
-            <a href="#info"><i class="fa fa-inverse fa-info-circle"></i></a>
+            <a href="#about"><i class="fa fa-inverse fa-info-circle"></i></a>
         </footer>
         <script src="js/firebase.js"></script>
         <script src="js/handlebars-v4.0.11.js"></script>
