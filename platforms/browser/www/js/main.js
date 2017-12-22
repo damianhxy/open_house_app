@@ -1,6 +1,5 @@
 $(function() {
     var CONSTANTS = null;
-
     var $current_page = null;
 
     $(window).on("hashchange", function() {
@@ -95,6 +94,7 @@ $(function() {
         updateConstants();
         compilePages();
         displayPoints();
+        console.timeEnd("init");
     }
 
     $("#updateData").click(function() {
@@ -159,9 +159,9 @@ $(function() {
     }
 
     function addCode(id) {
-        var codes = getEnteredCodes();
-        codes.push(id);
-        localStorage.setItem("enteredCodes", JSON.stringify(codes));
+        var enteredCodes = getEnteredCodes();
+        enteredCodes.push(id);
+        localStorage.setItem("enteredCodes", JSON.stringify(enteredCodes));
     }
 
     function displayPoints() {
@@ -180,11 +180,19 @@ $(function() {
                 $e.attr("class", "danger");
             }
         });
+        var codes = getFirebaseData().Codes
+        var enteredCodes = getEnteredCodes();
+        enteredCodes = enteredCodes.map(function(e) {
+            return codes[e].code + ' (' + codes[e].value + ')';
+        });
+        if (!enteredCodes.length) enteredCodes = ["-- None --"];
+        $("#enteredCodes").text(enteredCodes.join('\n'));
     }
 
     function executeAdminCommand(cmd) {
         var instruction = cmd.substr(0, cmd.indexOf(' '));
         var value = cmd.substr(cmd.indexOf(' ') + 1);
+        if (!instruction) instruction = value;
         console.log("Admin Command:", instruction, value);
         if (instruction === "add") {
             console.log("Adding", value, "points");
@@ -241,7 +249,26 @@ $(function() {
         } else {
             processCode(code);
         }
+        $("[name='code']").val('');
         displayPoints();
+    });
+
+    /* CCA Page */
+    $(".btn-cca").click(function(e) {
+        var $target = $(e.target)
+        var tag = $target.text().trim();
+        console.log("Toggling tag", tag);
+        var state = !$target.data("active");
+        $target.data("active", state);
+        $target.toggleClass("btn-success", state);
+        $target.toggleClass("btn-danger", !state);
+        $target.children().first().toggleClass("fa-toggle-on", state);
+        $target.children().first().toggleClass("fa-toggle-off", !state);
+        if (state) {
+            $("[data-cca='" + tag + "']").show();
+        } else {
+            $("[data-cca='" + tag + "']").hide();
+        }
     });
 
     $(window).on("online offline", displayConnectivity);
@@ -251,5 +278,4 @@ $(function() {
     console.time("init");
     if (!localStorage.getItem("data")) pullFirebaseData();
     else init();
-    console.timeEnd("init");
 });
