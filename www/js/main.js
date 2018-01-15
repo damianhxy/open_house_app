@@ -255,7 +255,7 @@ $(function() {
 
     /* CCA Page */
     $(".btn-cca").click(function(e) {
-        var $target = $(e.target)
+        var $target = $(e.target).closest(".btn-cca");
         var tag = $target.text().trim();
         console.log("Toggling tag", tag);
         var state = !$target.data("active");
